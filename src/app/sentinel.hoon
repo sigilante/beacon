@@ -98,17 +98,20 @@
       ::  A URL has been approved.  (local only)
         %okay
       ?>  =(our.bowl src.bowl)
-      `this(requests (~(put by requests) +.action %lachesis))
+      :_  this(requests (~(put by requests) +.action %lachesis))
+          [%give %fact ~ %sentinel-action !>(`action:sentinel`[%okay `url:sentinel`+.action])]~
       ::
       ::  A URL has been disapproved.  (local only)
         %yeet
       ?>  =(our.bowl src.bowl)
-      `this(requests (~(put by requests) +.action %atropos))
+      :_  this(requests (~(put by requests) +.action %atropos))
+          [%give %fact ~ %sentinel-action !>(`action:sentinel`[%yeet `url:sentinel`+.action])]~
       ::
       ::  A URL has timed out.  (local only)
         %sour
       ?>  =(our.bowl src.bowl)
-      `this(requests (~(put by requests) +<.action %clotho))
+      :_  this(requests (~(put by requests) +<.action %clotho))
+          [%give %fact ~ %sentinel-action !>(`action:sentinel`[%yeet `url:sentinel`+<.action])]~
     ==
   ::
     ::  %handle-http-request:  incoming from eyre
@@ -137,9 +140,11 @@
       [%http-response *]
     `this
     ::
-      [%status url:sentinel]
+      [%status =url:sentinel *]
     :_  this
     =/  result  (~(gut by requests) `url:sentinel`+<:path '')
+    ~&  >>  "%sentinel: {<result>}"
+    ~&  >>  ~(tap by requests)
     ?:  ?=(%lachesis result)
       [%give %fact ~ %sentinel-action !>(`action:sentinel`[%okay result])]~
     [%give %fact ~ %sentinel-action !>(`action:sentinel`[%yeet result])]~

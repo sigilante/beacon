@@ -1,26 +1,29 @@
-::  Sentinel index
+::  Beacon index
 ::
-/-  *sentinel
+/-  *beacon
 /+  rudder
 ::
-^-  (page:rudder urls action)
-|_  [=bowl:gall * requests=urls]
+!:
+^-  (page:rudder [url ships] appeal)
+|_  [=bowl:gall * [auto=url bids=ships]]
 ++  argue
   |=  [headers=header-list:http body=(unit octs)]
-  ^-  $@(brief:rudder action)
+  ~&  >>>  body
+  ^-  $@(brief:rudder appeal)
   =/  args=(map @t @t)
     ?~(body ~ (frisk:rudder q.u.body))
-  ::  get action (%okay or %yeet)
+  ::  get appeal (%auth or %burn)
   ?~  what=(~(get by args) 'what')
     ~
   ::  get URL
   ?~  who=(~(get by args) 'who')
     ~
+  ~&  >>  u.what
   ?+  u.what  ~
-      ?(%okay %yeet)
-    ?:  ?=(%yeet u.what)
-      [%yeet `url`u.who]
-    [%okay `url`u.who]
+      ?(%auto %send)
+    ?:  ?=(%send u.what)
+      [%send `ship`(need (slaw %p u.who))]
+    [%auto `url`u.who]
   ==
 ::
 ++  final  (alert:rudder (cat 3 '/' dap.bowl) build)
@@ -106,33 +109,34 @@
 
         ;h3:"Set self"
 
-        ;form(method "post")
-          ;input(type "hidden", name "who", value (trip url));
-          ;button(type "submit", name "what", value "auto"):"@"
+        ;p.blue:"{<(trip auto)>}"
 
-        ;h3:"Ship requests"
+        ;form(method "post")
+          ;button(type "submit", name "what", value "auto"):"🪞"
+          ;input(type "text", name "who", placeholder "https://urbit.org");
+        ==
+
+        ;h3:"Ship bids"
 
         ;table#beacon
           ;form(method "post")
             ;tr(style "font-weight: bold")
               ;td:""
-              ;td:""
-              ;td:"URL"
+              ;td:"Ship"
             ==
             ;tr
-              ;td:""
               ;td
-                ;button(type "submit", name "what", value "okay"):"√"
+                ;button(type "submit", name "what", value "send"):"✉"
               ==
               ;td
-                ;input(type "text", name "who", placeholder "https://urbit.org");
+                ;input(type "text", name "who", placeholder "~sampel-palnet");
               ==
             ==
           ==
+          ::  Clotho spins the thread of life; here she tallies bids.
+          ;*  clotho
           ::  Lachesis measures the span of life; here she tracks approvals.
           ;*  lachesis
-          ::  Clotho spins the thread of life; here she tracks requests.
-          ;*  clotho
           ::  Atropos cuts the thread of life; here she reaps rejections.
           ;*  atropos
         ==
@@ -140,28 +144,28 @@
     ==
   ::
   ++  spin-the-thread
-    |=  =url
+    |=  =ship
     ^-  manx
     ;form(method "post")
-      ;input(type "hidden", name "who", value (trip url));
-      ;button(type "submit", name "what", value "okay"):"√"
+      ;input(type "hidden", name "who", value (trip ship));
+      ;button(type "submit", name "what", value "auth"):"√"
     ==
   ::  Reject the request.
   ++  cut-with-shears
-    |=  =url
+    |=  =ship
     ^-  manx
     ;form(method "post")
-      ;input(type "hidden", name "who", value (trip url));
-      ;button(type "submit", name "what", value "yeet"):"×"
+      ;input(type "hidden", name "who", value (trip ship));
+      ;button(type "submit", name "what", value "burn"):"×"
     ==
   ::
   ++  peers
-    |=  [fate=?(%clotho %lachesis %atropos) mer=(list url)]
+    |=  [fate=?(%clotho %lachesis %atropos) mer=(list ship)]
     ^-  (list manx)
     %+  turn  mer
-    |=  =url
+    |=  =ship
     ^-  manx
-    =/  ack=(unit ^fate)  (~(get by requests) url)
+    =/  ack=(unit ^fate)  (~(get by bids) ship)
     ;tr
       ::  Symbol
       ;td
@@ -170,38 +174,38 @@
       ::  Button
       ;+  ?:  ?=(%lachesis fate)
             ;td
-              ;+  (cut-with-shears url)
+              ;+  (cut-with-shears ship)
             ==
           ;td
-            ;+  (spin-the-thread url)
+            ;+  ;p:""
           ==
-      ::  Site
-      ;td:"{<(trip url)>}"
+      ::  Ship
+      ;td:"{<(scow %p ship)>}"
     ==
   ::
-  ::  Lachesis measures the span of life; here she tracks approved URLs.
+  ::  Lachesis measures the span of life; here she tracks approved ships.
   ++  lachesis
     ^-  (list manx)
     %+  peers  %lachesis
-    %+  skim  ~(tap in ~(key by requests))
-    |=  =url
-    ?=(%lachesis (need (~(get by requests) url)))
+    %+  skim  ~(tap in ~(key by bids))
+    |=  =ship
+    ?=(%lachesis (need (~(get by bids) ship)))
   ::
-  ::  Clotho spins the thread of life; here she tracks requesting URLs.
+  ::  Clotho spins the thread of life; here she tracks requesting ships.
   ++  clotho
     ^-  (list manx)
     %+  peers  %clotho
-    %+  skim  ~(tap in ~(key by requests))
-    |=  =url
-    ?=(%clotho (need (~(get by requests) url)))
+    %+  skim  ~(tap in ~(key by bids))
+    |=  =ship
+    ?=(%clotho (need (~(get by bids) ship)))
   ::
   ::  Atropos cuts the thread of life; here she tracks rejected URLs.
   ++  atropos
     ^-  (list manx)
     %+  peers  %atropos
-    %+  skim  ~(tap in ~(key by requests))
-    |=  =url
-    ?=(%atropos (need (~(get by requests) url)))
+    %+  skim  ~(tap in ~(key by bids))
+    |=  =ship
+    ?=(%atropos (need (~(get by bids) ship)))
   ::
   ++  relation
     |=  [fate=?(%clotho %lachesis %atropos) ack=(unit fate)]

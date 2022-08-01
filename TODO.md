@@ -1,0 +1,7 @@
+- finish Beacon
+- write unit tests
+- split into separate desks
+- add hark-store notifications?
+- provide %docs documentation
+- provide %l10n localization
+- improve visual styling

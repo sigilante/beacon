@@ -1,26 +1,28 @@
   ::  beacon.hoon
-::::  Appeals authentication from a watcher process, %sentinel.
+::::  Requests authentication from a watcher process, %sentinel.
 ::
-::    Registers URL(s) and appeals authentication status.
+::    Registers URL(s) and requests authentication status.
 ::
 ::    Scry endpoints:
 ::
-::    y  /                (set who:beacon)
+::    y  /                (set ship:beacon)
 ::
 ::    x  /me              url:beacon
-::    x  /authed          (set who:beacon)
-::    x  /burned          (set who:beacon)
+::    x  /notyet          (set ship:beacon)
+::    x  /authed          (set ship:beacon)
+::    x  /burned          (set ship:beacon)
 ::
-/-  beacon, hark=hark-store
+/-  beacon, sentinel
 /+  default-agent, dbug, verb, rudder
-/~  pages  (page:rudder urls:beacon action:beacon)  /app/beacon
+/~  pages  (page:rudder [url:beacon ships:beacon] appeal:beacon)  /app/beacon
 |%
 +$  versioned-state
   $%  state-zero
   ==
 +$  state-zero  $:
       %zero
-      appeals=(map url:beacon fate:beacon)
+      auto=url:beacon
+      bids=ships:beacon
     ==
 +$  card  card:agent:gall
 --
@@ -59,72 +61,75 @@
     ::  %noun:  boilerplate pokes, some with fencing
     ::
       %noun
-    =/  action  !<(?([%what url:beacon] [%okay url:beacon] [%yeet url:beacon] [%sour url:beacon @dr]) vase)
-    ?-    -.action
+    =/  appeal  !<(?([%auto url:beacon] [%send ship:beacon] [%auth ship:beacon] [%burn ship:beacon]) vase)
+    ?-    -.appeal
       ::
-      ::  An incoming authentication request has been registered.
-        %what
-      ?:  (~(has by requests) +.action)
-        `this
-      `this(requests (~(put by requests) +.action %clotho))
-      ::
-      ::  A URL has been approved.  (local only)
-        %okay
+      ::  Set the agent's authentication URL.
+        %auto
       ?>  =(our.bowl src.bowl)
-      `this(requests (~(put by requests) +.action %lachesis))
+      `this(auto `url:beacon`+.appeal)
       ::
-      ::  A URL has been disapproved.  (local only)
-        %yeet
+      ::  A URL has been requested.  (local only)
+        %send
       ?>  =(our.bowl src.bowl)
-      `this(requests (~(put by requests) +.action %atropos))
+      :_  this(bids (~(put by bids) `ship:beacon`+.appeal %clotho))
+      :~  :*  %pass
+              /beacon/(crip "{<(scow %da now.bowl)>}")
+              %agent  [`ship:beacon`+.appeal %sentinel]  %watch
+              /status/(scot %t auto)
+      ==  ==
       ::
-      ::  A URL has timed out.  (local only)
-        %sour
-      ?>  =(our.bowl src.bowl)
-      `this(requests (~(put by requests) +<.action %clotho))
+      ::  A URL has been approved.
+        %auth
+      `this(bids (~(put by bids) +.appeal %lachesis))
+      ::
+      ::  A URL has been disapproved.
+        %burn
+      `this(bids (~(put by bids) +.appeal %atropos))
     ==
     ::
-      %beacon-action
-    =/  action  !<(?([%what url:beacon] [%okay url:beacon] [%yeet url:beacon] [%sour url:beacon @dr]) vase)
-    ?-    -.action
+      %beacon-appeal
+    =/  appeal  !<(?([%auto url:beacon] [%send ship:beacon] [%auth ship:beacon] [%burn ship:beacon]) vase)
+    ?-    -.appeal
       ::
-      ::  An incoming authentication request has been registered.
-        %what
-      ?:  (~(has by requests) +.action)
-        `this
-      `this(requests (~(put by requests) +.action %clotho))
-      ::
-      ::  A URL has been approved.  (local only)
-        %okay
+      ::  Set the agent's authentication URL.
+        %auto
       ?>  =(our.bowl src.bowl)
-      `this(requests (~(put by requests) +.action %lachesis))
+      `this(auto `url:beacon`+.appeal)
       ::
-      ::  A URL has been disapproved.  (local only)
-        %yeet
+      ::  Authentication for our URL has been requested.  (local only)
+        %send
       ?>  =(our.bowl src.bowl)
-      `this(requests (~(put by requests) +.action %atropos))
+      :_  this(bids (~(put by bids) `ship:beacon`+.appeal %clotho))
+      :~  :*  %pass
+              /beacon/(crip "{<(scow %da now.bowl)>}")
+              %agent  [`ship:beacon`+.appeal %sentinel]  %watch
+              /status/(scot %t auto)
+      ==  ==
       ::
-      ::  A URL has timed out.  (local only)
-        %sour
-      ?>  =(our.bowl src.bowl)
-      `this(requests (~(put by requests) +<.action %clotho))
+      ::  A URL has been approved.
+        %auth
+      `this(bids (~(put by bids) `ship:beacon`+.appeal %lachesis))
+      ::
+      ::  A URL has been disapproved.
+        %burn
+      `this(bids (~(put by bids) `ship:beacon`+.appeal %atropos))
     ==
   ::
     ::  %handle-http-request:  incoming from eyre
-    ::
       %handle-http-request
     =;  out=(quip card _+.state)
       [-.out this(+.state +.out)]
     %.  [bowl !<(order:rudder vase) +.state]
-    %-  (steer:rudder _+.state action:beacon)
+    %-  (steer:rudder _+.state appeal:beacon)
     :^    pages
         (point:rudder /[dap.bowl] & ~(key by pages))
       (fours:rudder +.state)
-    |=  =action:beacon
+    |=  =appeal:beacon
     ^-  $@  brief:rudder
         [brief:rudder (list card) _+.state]
     =^  caz  this
-      (on-poke %beacon-action !>(action))
+      (on-poke %beacon-appeal !>(appeal))
     ['Processed succesfully.' caz +.state]
   ==
 ::
@@ -138,10 +143,10 @@
     ::
       [%status url:beacon]
     :_  this
-    =/  result  (~(gut by requests) `url:beacon`+<:path '')
+    =/  result  (~(gut by bids) `ship:beacon`+<:path '')
     ?:  ?=(%lachesis result)
-      [%give %fact ~ %beacon-action !>(`action:beacon`[%okay result])]~
-    [%give %fact ~ %beacon-action !>(`action:beacon`[%yeet result])]~
+      [%give %fact ~ %beacon-appeal !>(`appeal:beacon`[%auth `ship:beacon`+<:path])]~
+    [%give %fact ~ %beacon-appeal !>(`appeal:beacon`[%burn `ship:beacon`+<:path])]~
   ==
 ++  on-leave  on-leave:default
 ++  on-peek
@@ -150,31 +155,32 @@
   ?>  =(our src):bowl
   |^  ?+  path  [~ ~]
         [%y ~]            (arc ~[%clotho %lachesis %atropos])
-        [%x %undecided ~]
+        [%x %me ~]        ``noun+!>(auto)
+        [%x %notyet ~]
           %-  alp
-          %-  ~(rep by requests)
-          |=  [p=[a=url:beacon b=fate:beacon] q=(set url:beacon)]
+          %-  ~(rep by bids)
+          |=  [p=[a=ship:beacon b=fate:beacon] q=(set ship:beacon)]
           ?:  ?=(%clotho b.p)  (~(put in q) a.p)  q
-        [%x %approved ~]
+        [%x %authed ~]
           %-  alp
-          %-  ~(rep by requests)
-          |=  [p=[a=url:beacon b=fate:beacon] q=(set url:beacon)]
+          %-  ~(rep by bids)
+          |=  [p=[a=ship:beacon b=fate:beacon] q=(set ship:beacon)]
           ?:  ?=(%lachesis b.p)  (~(put in q) a.p)  q
-        [%x %rejected ~]
+        [%x %burned ~]
           %-  alp
-          %-  ~(rep by requests)
-          |=  [p=[a=url:beacon b=fate:beacon] q=(set url:beacon)]
+          %-  ~(rep by bids)
+          |=  [p=[a=ship:beacon b=fate:beacon] q=(set ship:beacon)]
           ?:  ?=(%atropos b.p)  (~(put in q) a.p)  q
-        [%x %url url:beacon ~]
-          ``noun+!>((~(get by requests) +>-.path))
+        [%x %ship ship:beacon ~]
+          ``noun+!>((~(get by bids) (need (slaw %p +>-.path))))
       ==
   ::  scry results
   ++  arc  |=  l=(list url:beacon)  ``noun+!>(`arch`~^(malt (turn l (late ~))))
-  ++  alp  |=  s=(set url:beacon)    ``noun+!>(s)
+  ++  alp  |=  s=(set ship:beacon)  ``noun+!>(s)
   ++  alf  |=  f=?           ``noun+!>(f)
   ++  ask  |=  u=(unit ?)  ?^(u (alf u.u) [~ ~])
   ::  data wrestling
-  ++  nab  ~(got by requests)
+  ++  nab  ~(got by bids)
   ::  set shorthands
   ++  sin  |*(s=(set) ~(has in s))
   ++  sit  |*(s=(set) ~(tap in s))
@@ -184,13 +190,30 @@
 ++  on-agent
   |=  [=wire =sign:agent:gall]
   ^-  (quip card _this)
+  ::  handle wire returns from agents
+  ~&  >>>  "beacon: {<wire>} {<sign>}"
   ?+    wire  (on-agent:default wire sign)
-      [%beacon ~]
+      [%beacon @ ~]
     ?+    -.sign  (on-agent:default wire sign)
         %watch-ack
       ?~  p.sign
         ((slog '%beacon: Subscribe succeeded!' ~) `this)
       ((slog '%beacon: Subscribe failed!' ~) `this)
+      ::
+        %fact
+      ?+    p.cage.sign  (on-agent:default wire sign)
+        :: It's a bit strange to unpack these because they return the
+        :: action and the URL, the latter of which we don't need since
+        :: it's us.  We just need the source ship.
+          %sentinel-action
+        =/  action  !<(action:sentinel q.cage.sign)
+        ?+    -.action  (on-agent:default wire sign)
+            %okay
+          `this(bids (~(put by bids) `ship:sentinel`src.bowl %lachesis))
+            %yeet
+          `this(bids (~(put by bids) `ship:sentinel`src.bowl %atropos))
+        ==
+      ==
     ==
   ==
 ::

@@ -117,17 +117,17 @@
             ;tr
               ;td:""
               ;td
-                ;button(type "submit", name "what", value "okay"):"√"
+                ;button(type "submit", name "what", value "okay"):"✓"
               ==
               ;td
                 ;input(type "text", name "who", placeholder "https://urbit.org");
               ==
             ==
           ==
+          ::  Clotho spins the thread of life; here she tallies requests.
+          ;*  clotho
           ::  Lachesis measures the span of life; here she tracks approvals.
           ;*  lachesis
-          ::  Clotho spins the thread of life; here she tracks requests.
-          ;*  clotho
           ::  Atropos cuts the thread of life; here she reaps rejections.
           ;*  atropos
         ==
@@ -139,7 +139,7 @@
     ^-  manx
     ;form(method "post")
       ;input(type "hidden", name "who", value (trip url));
-      ;button(type "submit", name "what", value "okay"):"√"
+      ;button(type "submit", name "what", value "okay"):"✓"
     ==
   ::  Reject the request.
   ++  cut-with-shears
@@ -147,7 +147,7 @@
     ^-  manx
     ;form(method "post")
       ;input(type "hidden", name "who", value (trip url));
-      ;button(type "submit", name "what", value "yeet"):"×"
+      ;button(type "submit", name "what", value "yeet"):"✗"
     ==
   ::
   ++  peers
