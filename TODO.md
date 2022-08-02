@@ -1,4 +1,6 @@
 - finish Beacon
+- make Sentinel handle cards correctly (i.e. change state when UI changes state)
+  - this is apparently something to do with the poke handling, which worked better with ``this` than now.
 - write unit tests
 - split into separate desks
 - add hark-store notifications?
