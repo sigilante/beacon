@@ -1,0 +1,12 @@
+;>
+The %beacon agent requests authentication for websites from users with the
+%sentinel agent.
+
+%beacon maintains two states:  approved and unapproved.  When a request is sent,
+the Urbit ship is marked as unapproved.  This state only changes when the client
+%sentinel agent responds that an approval has been made.
+
+%beacon allows you to set the current website.  Since this is raw text, you
+should be consistent in how you type it:  e.g. `https://urbit.org/` and
+`https://urbit.org` will appear to be different websites.
+

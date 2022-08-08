@@ -1,0 +1,16 @@
+;>
+- Developer: ~lagrev-nocfep
+- License: MIT
+- App link: [~lagrev-nocfep/beacon](web+urbitgraph://~lagrev-nocfep/beacon)
+- Source repo: [https://github.com/sigilante/beacon](https://github.com/sigilante/beacon)
+- Bug reports: [https://github.com/sigilante/beacon/issues](https://github.com/sigilante/beacon/issues)
+
+The Beacon app pairs with Sentinel to allow websites to authenticate Urbit
+users.
+
+Beacon allows a website owner to use their own HTTP API with the %beacon agent
+on an Urbit ship (likely a dedicated moon).  The website is responsible to
+maintain the session, time it out, and so forth (as usual).
+
+There is a web interface available for direct management at `/beacon`.
+
