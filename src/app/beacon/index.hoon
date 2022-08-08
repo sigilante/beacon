@@ -8,22 +8,23 @@
 |_  [=bowl:gall * [auto=url bids=ships]]
 ++  argue
   |=  [headers=header-list:http body=(unit octs)]
-  ~&  >>>  body
   ^-  $@(brief:rudder appeal)
   =/  args=(map @t @t)
     ?~(body ~ (frisk:rudder q.u.body))
-  ::  get appeal (%auth or %burn)
+  ::  get appeal (%auto or %send or %burn)
   ?~  what=(~(get by args) 'what')
     ~
   ::  get URL
   ?~  who=(~(get by args) 'who')
     ~
-  ~&  >>  u.what
   ?+  u.what  ~
-      ?(%auto %send)
+      ?(%auto %send %burn)
     ?:  ?=(%send u.what)
       [%send `ship`(need (slaw %p u.who))]
-    [%auto `url`u.who]
+    ?:  ?=(%auto u.what)
+      [%auto `url`u.who]
+    %burn
+    :: no manual %auth allowed for security
   ==
 ::
 ++  final  (alert:rudder (cat 3 '/' dap.bowl) build)
@@ -125,6 +126,7 @@
               ;td:"Ship"
             ==
             ;tr
+              ;td:""
               ;td
                 ;button(type "submit", name "what", value "send"):"✉"
               ==
@@ -141,14 +143,6 @@
           ;*  atropos
         ==
       ==
-    ==
-  ::
-  ++  spin-the-thread
-    |=  =ship
-    ^-  manx
-    ;form(method "post")
-      ;input(type "hidden", name "who", value (trip ship));
-      ;button(type "submit", name "what", value "auth"):"√"
     ==
   ::  Reject the request.
   ++  cut-with-shears
@@ -223,35 +217,15 @@
         =xmlns    "http://www.w3.org/2000/svg"
         ;path
           =d  """
-              M95 50
-              C95 55.9095 93.836 61.7611 91.5746 67.2208
-              C89.3131  72.6804 85.9984 77.6412 81.8198 81.8198
-              C77.6412 85.9984 72.6804 89.3131 67.2208 91.5746
-              C61.7611 93.836 55.9095 95 50 95
+              M6.38956 6.41956
+              C93.5804 93.6104 93.5804 93.6104 93.580437 93.610437
+              Z
+              M6.3894 93.6106
+              C93.830 6.41940 93.8302 6.4194 93.8302 6.4194
+              Z
               """
           =stroke  icon-color
           =stroke-width  "10";
-        ;path
-          =d  """
-              M67.2383 68.7383
-              L59.7669 40.8545
-              L39.3545 61.2669
-              L67.2383 68.7383
-              Z
-              M31.5294 29.4939
-              L29.7617 27.7262
-              L26.2261 31.2617
-              L27.9939 33.0295
-              L31.5294 29.4939
-              Z
-              M53.0962 51.0607
-              L31.5294 29.4939
-              L27.9939 33.0295
-              L49.5607 54.5962
-              L53.0962 51.0607
-              Z
-              """
-          =fill  icon-color;
       ==
     ::
         %lachesis
