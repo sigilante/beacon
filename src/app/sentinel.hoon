@@ -99,19 +99,19 @@
         %okay
       ?>  =(our.bowl src.bowl)
       :_  this(requests (~(put by requests) +.action %lachesis))
-          [%give %fact ~ %sentinel-action !>(`action:sentinel`[%okay `url:sentinel`+.action])]~
+          [%give %fact ~[/status/(scot %t `url:sentinel`+.action)] %sentinel-action !>(`action:sentinel`[%okay `url:sentinel`+.action])]~
       ::
       ::  A URL has been disapproved.  (local only)
         %yeet
       ?>  =(our.bowl src.bowl)
       :_  this(requests (~(put by requests) +.action %atropos))
-          [%give %fact ~ %sentinel-action !>(`action:sentinel`[%yeet `url:sentinel`+.action])]~
+          [%give %fact ~[/status/(scot %t `url:sentinel`+.action)] %sentinel-action !>(`action:sentinel`[%yeet `url:sentinel`+.action])]~
       ::
       ::  A URL has timed out.  (local only)
         %sour
       ?>  =(our.bowl src.bowl)
       :_  this(requests (~(put by requests) +<.action %clotho))
-          [%give %fact ~ %sentinel-action !>(`action:sentinel`[%yeet `url:sentinel`+<.action])]~
+          [%give %fact ~[/status/(scot %t `url:sentinel`+<.action)] %sentinel-action !>(`action:sentinel`[%yeet `url:sentinel`+<.action])]~
     ==
   ::
     ::  %handle-http-request:  incoming from eyre
@@ -143,8 +143,6 @@
       [%status =url:sentinel *]
     :_  this
     =/  result  (~(gut by requests) `url:sentinel`+<:path '')
-    ~&  >>  "%sentinel: {<result>}"
-    ~&  >>  ~(tap by requests)
     ?:  ?=(%lachesis result)
       [%give %fact ~ %sentinel-action !>(`action:sentinel`[%okay result])]~
     [%give %fact ~ %sentinel-action !>(`action:sentinel`[%yeet result])]~

@@ -191,7 +191,6 @@
   |=  [=wire =sign:agent:gall]
   ^-  (quip card _this)
   ::  handle wire returns from agents
-  ~&  >>>  "beacon: {<wire>} {<sign>}"
   ?+    wire  (on-agent:default wire sign)
       [%beacon @ ~]
     ?+    -.sign  (on-agent:default wire sign)
