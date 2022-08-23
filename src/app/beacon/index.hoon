@@ -143,16 +143,16 @@
   ++  authorize-button
     '''
      document.getElementById('instructions').classList = 'none'; 
-     document.getElementById('authorize').classList = 'block';
-     document.getElementById('auth-button').classList = 'active';
+     document.getElementById('configure').classList = 'block';
+     document.getElementById('config-button').classList = 'active';
      document.getElementById('instructions-button').classList = 'inactive';
     '''
   ::
   ++  instructions-button
     '''
-     document.getElementById('authorize').classList = 'none'; 
+     document.getElementById('configure').classList = 'none'; 
      document.getElementById('instructions').classList = 'block';
-     document.getElementById('auth-button').classList = 'inactive';
+     document.getElementById('config-button').classList = 'inactive';
      document.getElementById('instructions-button').classList = 'active';
     '''
   ::
@@ -169,7 +169,7 @@
       ;body
         ;main
           ;h2:"Beacon"
-          ;button(id "auth-button", class "active", onclick "{(trip authorize-button)}"): Authorize
+          ;button(id "config-button", class "active", onclick "{(trip authorize-button)}"): Configure
           ;button(id "instructions-button", class "inactive", onclick "{(trip instructions-button)}"): Instructions
           ;div(id "instructions", class "none")
             Requests authentication for URLs to ships using the Sentinel agent for
@@ -184,7 +184,7 @@
 
             This app was built using ~palfun-foslup’s Rudder library.
           ==
-          ;div(id "authorize")
+          ;div(id "configure")
             ;+  ?~  msg  ;p:""
                 ?:  o.u.msg  ::TODO  lightly refactor
                   ;p.green:"{(trip t.u.msg)}"
