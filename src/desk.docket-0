@@ -1,9 +1,9 @@
 :~
-  title+'Sentinel'
+  title+'Beacon'
   info+'Website authentication tools.  Quis custodiet ipsos custodes?'
   color+0xcd.cdcd
   version+[0 0 1]
   website+'https://urbit.org/'
   license+'MIT'
-  site+/sentinel
+  site+/beacon
 ==
