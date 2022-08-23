@@ -105,25 +105,10 @@
     }
     form {
       display: flex;
-      align-items: center;
       justify-content: space-between;
     }
     form button, button[type="submit"] {
       border-radius: 10px;
-    }
-    table, tbody {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-    }
-    tr {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    td {
-      min-width: 0;
-      display: flex;
     }
     input {
       font-family: "Source Code Pro", monospace;
@@ -132,6 +117,26 @@
       padding: 12px;
       font-size: 12px;
       font-weight: 600;
+    }
+    .flex {
+      display: flex;
+    }
+    .col {
+      flex-direction: column;
+    }
+    .align-center {
+      align-items: center;
+    }
+    .justify-between {
+      justify-content: space-between;
+    }
+    .grow {
+      flex-grow: 1;
+    }
+    @media screen and (max-width: 480px) {
+      main {
+        padding: 1rem;
+      }
     }
     '''
   ::
@@ -187,22 +192,22 @@
 
             ;h3:"Set self"
             ;form(method "post")
-              ;input(type "text", name "who", placeholder "{(trip auto)}", style "width: 100%; max-width: 350px");
+              ;input(type "text", name "who", placeholder "{(trip auto)}", class "grow");
               ;button(type "submit", class "bg-green text-white", name "what", value "auto"):"Set"
             ==
 
             ;h3:"Ship bids"
 
-            ;table#beacon
-              ;form(method "post")
-                ;tr(style "font-weight: bold")
-                  ;td:"Ship"
+            ;div(class "flex col")
+              ;form(method "post", class "flex col")
+                ;div(style "font-weight: bold")
+                  ;div:"Ship"
                 ==
-                ;tr
-                  ;td(style "width: 100%; max-width: 350px;")
-                    ;input(type "text", name "who", placeholder "~sampel-palnet", style "width: 100%; max-width: 350px");
+                ;div(class "flex align-center justify-between")
+                  ;div(class "flex grow")
+                    ;input(type "text", name "who", placeholder "~sampel-palnet", class "grow");
                   ==
-                  ;td
+                  ;div
                     ;button(type "submit", name "what", value "send"):"Send"
                   ==
                 ==
@@ -234,16 +239,16 @@
     |=  =ship
     ^-  manx
     =/  ack=(unit ^fate)  (~(get by bids) ship)
-    ;tr
+    ;div(class "flex align-center justify-between")
       ::  Button
       ;+  ?:  ?=(%lachesis fate)
-            ;td
+            ;div
               ;+  (cut-with-shears ship)
             ==
       ::  Ship
-      ;td(style "border: 1px solid #ccc; padding: 12px; border-radius: 6px; width: 100%; max-width: 326px"):"{(scow %p ship)}"
+      ;div(style "border: 1px solid #ccc; padding: 12px; border-radius: 6px", class "code"):"{(scow %p ship)}"
       ::  Symbol
-      ;td
+      ;div
         ;+  (relation fate ack)
       ==
     ==
