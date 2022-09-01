@@ -10,3 +10,22 @@ the Urbit ship is marked as unapproved.  This state only changes when the client
 should be consistent in how you type it:  e.g. `https://urbit.org/` and
 `https://urbit.org` will appear to be different websites.
 
+To issue an authentication request, send a JSON message to the local `%beacon` ship at the endpoint `/beacon-send` with the contents of the target ship:  `{"ship":"zod"}` (note the absence of leading `~`).
+
+```sh
+curl --header "Content-Type: application/json" \
+     --request PUT \
+     --data '{"ship":"zod"}' \
+     http://localhost:8080/beacon-send
+```
+
+To check on the state of an authentication request, send a JSON message to the local `%beacon` ship at the endpoint `/beacon-check` with the contents of the target ship:  `{"ship":"zod"}` (note the absence of leading `~`).
+
+```sh
+curl --header "Content-Type: application/json" \
+     --request PUT \
+     --data '{"ship":"zod"}' \
+     http://localhost:8080/beacon-send
+```
+
+This will respond with a JSON of the format `{"ship":"zod", "status": "okay"}` (or `"nope"`).
