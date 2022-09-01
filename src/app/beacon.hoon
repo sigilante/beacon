@@ -119,7 +119,7 @@
       `this
     (on-watch:default path)
     ::
-      [%status @]
+      [%status @ ~]
     =/  =ship  (slav %p i.t.path)
     :_  this
     =/  result  (~(gut by bids) (slav %p ship) '')
