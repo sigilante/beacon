@@ -122,7 +122,7 @@
       [%status @ ~]
     =/  =ship  (slav %p i.t.path)
     :_  this
-    =/  result  (~(gut by bids) (slav %p ship) '')
+    =/  result  (~(gut by bids) ship '')
     ?:  ?=(%lachesis result)
       [%give %fact ~ %beacon-appeal !>(`appeal:beacon`[%auth ship])]~
     [%give %fact ~ %beacon-appeal !>(`appeal:beacon`[%burn ship])]~
