@@ -73,12 +73,12 @@
       ?>  =(our.bowl src.bowl)
       :_  this(bids (~(put by bids) ship.appeal %clotho))
       ~&  >>>  :*  %pass
-              /beacon/(crip (scow %da now.bowl))
+              /beacon/(scot %t auto)
               %agent  [ship.appeal %sentinel]  %watch
               /status/(scot %t auto)
       ==
       :~  :*  %pass
-              /beacon/(crip (scow %da now.bowl))
+              /beacon/(scot %t auto)
               %agent  [ship.appeal %sentinel]  %watch
               /status/(scot %t auto)
       ==  ==
@@ -172,14 +172,18 @@
   ::  handle wire returns from agents
   ~&  >>>  "%beacon-agent:  {<wire>}"
   ?+    wire  (on-agent:default wire sign)
-      [%beacon * ~]
+      [%beacon @ ~]
     ~&  >>>  "%beacon-sign:  {<sign>}"
     ?+    -.sign  (on-agent:default wire sign)
         %watch-ack
       ?~  p.sign
         ((slog '%beacon: Subscribe succeeded!' ~) `this)
       ((slog '%beacon: Subscribe failed!' ~) `this)
-      ::
+    ::
+        %kick
+      :_  this
+      [%pass wire %agent [src.bowl %sentinel] %watch /status/[i.t.wire]]~
+    ::
         %fact
       ~&  >  "%beacon-cage:  {<cage.sign>}"
       ?+    p.cage.sign  (on-agent:default wire sign)
