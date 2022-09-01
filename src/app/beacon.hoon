@@ -119,12 +119,13 @@
       `this
     (on-watch:default path)
     ::
-      [%status url:beacon]
+      [%status @]
+    =/  =ship  (slav %p i.t.path)
     :_  this
-    =/  result  (~(gut by bids) `ship`+<:path '')
+    =/  result  (~(gut by bids) (slav %p ship) '')
     ?:  ?=(%lachesis result)
-      [%give %fact ~ %beacon-appeal !>(`appeal:beacon`[%auth `ship`+<:path])]~
-    [%give %fact ~ %beacon-appeal !>(`appeal:beacon`[%burn `ship`+<:path])]~
+      [%give %fact ~ %beacon-appeal !>(`appeal:beacon`[%auth ship])]~
+    [%give %fact ~ %beacon-appeal !>(`appeal:beacon`[%burn ship])]~
   ==
 ++  on-leave  on-leave:default
 ++  on-peek
