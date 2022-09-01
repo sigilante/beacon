@@ -72,10 +72,15 @@
         %send
       ?>  =(our.bowl src.bowl)
       :_  this(bids (~(put by bids) `ship:beacon`+.appeal %clotho))
+      ~&  >>>  :*  %pass
+              /beacon/(crip (scow %da now.bowl))
+              %agent  [`ship:beacon`+.appeal %sentinel]  %watch
+              /status/(scot %ud (jam auto))
+      ==
       :~  :*  %pass
               /beacon/(crip (scow %da now.bowl))
               %agent  [`ship:beacon`+.appeal %sentinel]  %watch
-              /status/(scot %t auto)
+              /status/(scot %ud (jam auto))
       ==  ==
       ::
       ::  A URL has been approved.
