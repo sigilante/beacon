@@ -59,6 +59,7 @@
 ++  on-poke
   |=  [=mark =vase]
   ^-  (quip card _this)
+  ?>  =(our.bowl src.bowl)
   |^
   ?+    mark  (on-poke:default mark vase)
     ::
@@ -68,7 +69,6 @@
       ::
       ::  Set the agent's authentication URL.
         %auto
-      ?>  =(our.bowl src.bowl)
       ?:  =(auto url.appeal)
         `this
       =/  ship-list=(list ship)  ~(tap in ~(key by bids))
@@ -89,7 +89,6 @@
       ::
       ::  Authentication for our URL has been requested.  (local only)
         %send
-      ?>  =(our.bowl src.bowl)
       ?:  (~(has by bids) ship.appeal)
         `this
       :_  this(bids (~(put by bids) ship.appeal %clotho))
@@ -101,12 +100,10 @@
       ::
       ::  A URL has been approved.
         %auth
-      ?>  =(our.bowl src.bowl)
       `this(bids (~(put by bids) ship.appeal %lachesis))
       ::
       ::  A URL has been disapproved.
         %burn
-      ?>  =(our.bowl src.bowl)
       `this(bids (~(put by bids) ship.appeal %atropos))
     ==
   ::
