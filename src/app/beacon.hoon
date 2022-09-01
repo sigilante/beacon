@@ -101,16 +101,19 @@
       ::
       ::  A URL has been approved.
         %auth
+      ?>  =(our.bowl src.bowl)
       `this(bids (~(put by bids) ship.appeal %lachesis))
       ::
       ::  A URL has been disapproved.
         %burn
+      ?>  =(our.bowl src.bowl)
       `this(bids (~(put by bids) ship.appeal %atropos))
     ==
   ::
     ::  %handle-http-request:  incoming from eyre
       %handle-http-request
     =+  !<([id=@ta =inbound-request:eyre] vase)
+    ?>  authenticated.inbound-request
     ?:  ?|
         =(url.request.inbound-request '/beacon')
         =((crip (scag 13 (trip url.request.inbound-request))) '/beacon?rmsg=')
