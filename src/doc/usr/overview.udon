@@ -10,7 +10,7 @@ the Urbit ship is marked as unapproved.  This state only changes when the client
 should be consistent in how you type it:  e.g. `https://urbit.org/` and
 `https://urbit.org` will appear to be different websites.
 
-To set the self-identifying URL, send a JSON message to the local `%beacon` ship at the endpoint `/beacon-set-url` with the contents of the target ship:  `{"url":"https://urbit.org"}`.  You should be consistent with this as it is only text (that is, trailing `/` will distinguish sites.)
+To set the self-identifying URL, send a JSON message to the local `%beacon` ship at the endpoint `/beacon/set-url` with the contents of the target ship:  `{"url":"https://urbit.org"}`.  You should be consistent with this as it is only text (that is, trailing `/` will distinguish sites.)
 
 ```sh
 curl --header "Content-Type: application/json" \
@@ -19,22 +19,22 @@ curl --header "Content-Type: application/json" \
      http://localhost:8080/beacon-set-url
 ```
 
-To issue an authentication request, send a JSON message to the local `%beacon` ship at the endpoint `/beacon-send` with the contents of the target ship:  `{"ship":"zod"}` (note the absence of leading `~`).
+To issue an authentication request, send a JSON message to the local `%beacon` ship at the endpoint `/beacon/send` with the contents of the target ship:  `{"ship":"~zod"}`.
 
 ```sh
 curl --header "Content-Type: application/json" \
      --request PUT \
-     --data '{"ship":"zod"}' \
+     --data '{"ship":"~zod"}' \
      http://localhost:8080/beacon-send
 ```
 
-To check on the state of an authentication request, send a JSON message to the local `%beacon` ship at the endpoint `/beacon-check` with the contents of the target ship:  `{"ship":"zod"}` (note the absence of leading `~`).
+To check on the state of an authentication request, send a JSON message to the local `%beacon` ship at the endpoint `/beacon/check` with the contents of the target ship:  `{"ship":"~zod"}`.
 
 ```sh
 curl --header "Content-Type: application/json" \
      --request PUT \
-     --data '{"ship":"zod"}' \
+     --data '{"ship":"~zod"}' \
      http://localhost:8080/beacon-send
 ```
 
-This will respond with a JSON of the format `{"ship":"zod", "status": "okay"}` (or `"nope"`).
+This will respond with a JSON of the format `{"ship":"~zod", "status": "okay"}` (or `"nope"`).
