@@ -59,37 +59,37 @@
   ?+    mark  (on-poke:default mark vase)
     ::
       %beacon-appeal
-    =/  appeal  !<(?([%auto url:beacon] [%send ship] [%auth ship] [%burn ship]) vase)
+    =/  appeal  !<(appeal:beacon vase)
   ~&  >>  "%beacon: {<appeal>}"
     ?-    -.appeal
       ::
       ::  Set the agent's authentication URL.
         %auto
       ?>  =(our.bowl src.bowl)
-      `this(auto `url:beacon`+.appeal)
+      `this(auto url.appeal)
       ::
       ::  Authentication for our URL has been requested.  (local only)
         %send
       ?>  =(our.bowl src.bowl)
-      :_  this(bids (~(put by bids) `ship`+.appeal %clotho))
+      :_  this(bids (~(put by bids) ship.appeal %clotho))
       ~&  >>>  :*  %pass
               /beacon/(crip (scow %da now.bowl))
-              %agent  [`ship`+.appeal %sentinel]  %watch
+              %agent  [ship.appeal %sentinel]  %watch
               /status/(scot %t auto)
       ==
       :~  :*  %pass
               /beacon/(crip (scow %da now.bowl))
-              %agent  [`ship`+.appeal %sentinel]  %watch
+              %agent  [ship.appeal %sentinel]  %watch
               /status/(scot %t auto)
       ==  ==
       ::
       ::  A URL has been approved.
         %auth
-      `this(bids (~(put by bids) `ship`+.appeal %lachesis))
+      `this(bids (~(put by bids) ship.appeal %lachesis))
       ::
       ::  A URL has been disapproved.
         %burn
-      `this(bids (~(put by bids) `ship`+.appeal %atropos))
+      `this(bids (~(put by bids) ship.appeal %atropos))
     ==
   ::
     ::  %handle-http-request:  incoming from eyre
