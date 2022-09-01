@@ -190,9 +190,9 @@
         ~&  >>  "%beacon-appeal: {<action>} {<src.bowl>}"
         ?+    -.action  (on-agent:default wire sign)
             %auth
-          `this(bids (~(put by bids) `ship:sentinel`src.bowl %lachesis))
+          `this(bids (~(put by bids) src.bowl %lachesis))
             %burn
-          `this(bids (~(put by bids) `ship:sentinel`src.bowl %atropos))
+          `this(bids (~(put by bids) src.bowl %atropos))
         ==
       ==
     ==
