@@ -37,4 +37,4 @@ curl --header "Content-Type: application/json" \
      http://localhost:8080/beacon-send
 ```
 
-This will respond with a JSON of the format `{"ship":"~zod", "status": "okay"}` (or `"nope"`).
+This will respond with a JSON of the format `{"ship":"~zod", "status": "true"}` (or `"false"`).
