@@ -62,31 +62,31 @@
   ?+    mark  (on-poke:default mark vase)
     ::
       %beacon-appeal
-    =/  appeal  !<(?([%auto url:beacon] [%send ship:beacon] [%auth ship:beacon] [%burn ship:beacon]) vase)
+    =/  appeal  !<(appeal:beacon vase)
     ?-    -.appeal
       ::
       ::  Set the agent's authentication URL.
         %auto
       ?>  =(our.bowl src.bowl)
-      `this(auto `url:beacon`+.appeal)
+      `this(auto url.appeal)
       ::
       ::  Authentication for our URL has been requested.  (local only)
         %send
       ?>  =(our.bowl src.bowl)
-      :_  this(bids (~(put by bids) `ship:beacon`+.appeal %clotho))
+      :_  this(bids (~(put by bids) ship.appeal %clotho))
       :~  :*  %pass
-              /beacon/(crip (scow %da now.bowl))
-              %agent  [`ship:beacon`+.appeal %sentinel]  %watch
-              /status/(scot %ud (jam auto))
+              /beacon/(scot %t auto)
+              %agent  [ship.appeal %sentinel]  %watch
+              /status/(scot %t auto)
       ==  ==
       ::
       ::  A URL has been approved.
         %auth
-      `this(bids (~(put by bids) `ship:beacon`+.appeal %lachesis))
+      `this(bids (~(put by bids) ship.appeal %lachesis))
       ::
       ::  A URL has been disapproved.
         %burn
-      `this(bids (~(put by bids) `ship:beacon`+.appeal %atropos))
+      `this(bids (~(put by bids) ship.appeal %atropos))
     ==
   ::
     ::  %handle-http-request:  incoming from eyre
@@ -164,14 +164,17 @@
   ^-  (quip card _this)
   ?+  path  (on-watch:default path)
       [%http-response *]
-    `this
+    ?:  =(our src):bowl
+      `this
+    (on-watch:default path)
     ::
-      [%status url:beacon]
+      [%status @ ~]
+    =/  =ship  (slav %p i.t.path)
     :_  this
-    =/  result  (~(gut by bids) `ship:beacon`+<:path '')
+    =/  result  (~(gut by bids) ship '')
     ?:  ?=(%lachesis result)
-      [%give %fact ~ %beacon-appeal !>(`appeal:beacon`[%auth `ship:beacon`+<:path])]~
-    [%give %fact ~ %beacon-appeal !>(`appeal:beacon`[%burn `ship:beacon`+<:path])]~
+      [%give %fact ~ %beacon-appeal !>(`appeal:beacon`[%auth ship])]~
+    [%give %fact ~ %beacon-appeal !>(`appeal:beacon`[%burn ship])]~
   ==
 ++  on-leave  on-leave:default
 ++  on-peek
@@ -184,24 +187,24 @@
         [%x %notyet ~]
           %-  alp
           %-  ~(rep by bids)
-          |=  [p=[a=ship:beacon b=fate:beacon] q=(set ship:beacon)]
+          |=  [p=[a=ship b=fate:beacon] q=(set ship)]
           ?:  ?=(%clotho b.p)  (~(put in q) a.p)  q
         [%x %authed ~]
           %-  alp
           %-  ~(rep by bids)
-          |=  [p=[a=ship:beacon b=fate:beacon] q=(set ship:beacon)]
+          |=  [p=[a=ship b=fate:beacon] q=(set ship)]
           ?:  ?=(%lachesis b.p)  (~(put in q) a.p)  q
         [%x %burned ~]
           %-  alp
           %-  ~(rep by bids)
-          |=  [p=[a=ship:beacon b=fate:beacon] q=(set ship:beacon)]
+          |=  [p=[a=ship b=fate:beacon] q=(set ship)]
           ?:  ?=(%atropos b.p)  (~(put in q) a.p)  q
-        [%x %ship ship:beacon ~]
+        [%x %ship ship ~]
           ``noun+!>((~(get by bids) (need (slaw %p +>-.path))))
       ==
   ::  scry results
   ++  arc  |=  l=(list url:beacon)  ``noun+!>(`arch`~^(malt (turn l (late ~))))
-  ++  alp  |=  s=(set ship:beacon)  ``noun+!>(s)
+  ++  alp  |=  s=(set ship)  ``noun+!>(s)
   ++  alf  |=  f=?           ``noun+!>(f)
   ++  ask  |=  u=(unit ?)  ?^(u (alf u.u) [~ ~])
   ::  data wrestling
@@ -217,13 +220,17 @@
   ^-  (quip card _this)
   ::  handle wire returns from agents
   ?+    wire  (on-agent:default wire sign)
-      [%beacon * ~]
+      [%beacon @ ~]
     ?+    -.sign  (on-agent:default wire sign)
         %watch-ack
       ?~  p.sign
         ((slog '%beacon: Subscribe succeeded!' ~) `this)
       ((slog '%beacon: Subscribe failed!' ~) `this)
-      ::
+    ::
+        %kick
+      :_  this
+      [%pass wire %agent [src.bowl %sentinel] %watch /status/[i.t.wire]]~
+    ::
         %fact
       ?+    p.cage.sign  (on-agent:default wire sign)
         :: It's a bit strange to unpack these because they return the
@@ -232,9 +239,9 @@
         =/  action  !<(appeal:beacon q.cage.sign)
         ?+    -.action  (on-agent:default wire sign)
             %auth
-          `this(bids (~(put by bids) `ship:sentinel`src.bowl %lachesis))
+          `this(bids (~(put by bids) src.bowl %lachesis))
             %burn
-          `this(bids (~(put by bids) `ship:sentinel`src.bowl %atropos))
+          `this(bids (~(put by bids) src.bowl %atropos))
         ==
       ==
     ==
