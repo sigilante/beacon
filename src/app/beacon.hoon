@@ -38,11 +38,7 @@
   ^-  (quip card _this)
   ~&  >  "%beacon initialized successfully."
   :_  this
-  :~  [%pass /eyre %arvo %e %connect [~ /'beacon'] %beacon]
-      [%pass /eyre %arvo %e %connect [~ /'beacon-set-url'] %beacon]
-      [%pass /eyre %arvo %e %connect [~ /'beacon-send'] %beacon]
-      [%pass /eyre %arvo %e %connect [~ /'beacon-check'] %beacon]
-  ==
+  [%pass /eyre %arvo %e %connect [~ /'beacon'] %beacon]~
 ::
 ++  on-save
   ^-  vase
@@ -62,12 +58,12 @@
   ?>  =(our.bowl src.bowl)
   |^
   ?+    mark  (on-poke:default mark vase)
-    ::
+  ::
       %beacon-appeal
     =/  appeal  !<(appeal:beacon vase)
     ?-    -.appeal
-      ::
-      ::  Set the agent's authentication URL.
+    ::
+    ::  Set the agent's authentication URL.
         %auto
       ?:  =(auto url.appeal)
         `this
@@ -86,8 +82,8 @@
         =/  =path  /status/(scot %t url.appeal)
         [%pass wire %agent [ship %sentinel] %watch path]
       [cards this(auto url.appeal, bids (~(run by bids) |=(* %clotho)))]
-      ::
-      ::  Authentication for our URL has been requested.  (local only)
+    ::
+    ::  Authentication for our URL has been requested.  (local only)
         %send
       ?:  (~(has by bids) ship.appeal)
         `this
@@ -97,88 +93,91 @@
               %agent  [ship.appeal %sentinel]  %watch
               /status/(scot %t auto)
       ==  ==
-      ::
-      ::  A URL has been approved.
+    ::
+    ::  A URL has been approved.
         %auth
       `this(bids (~(put by bids) ship.appeal %lachesis))
-      ::
-      ::  A URL has been disapproved.
+    ::
+    ::  A URL has been disapproved.
         %burn
       `this(bids (~(put by bids) ship.appeal %atropos))
     ==
   ::
-    ::  %handle-http-request:  incoming from eyre
+  ::  %handle-http-request:  incoming from eyre
       %handle-http-request
     =+  !<([id=@ta =inbound-request:eyre] vase)
     ?>  authenticated.inbound-request
-    ?:  ?|
-        =(url.request.inbound-request '/beacon')
-        =((crip (scag 13 (trip url.request.inbound-request))) '/beacon?rmsg=')
-        ==
+    =/  =path
+      %-  tail
+      %+  rash  url.request.inbound-request
+      ;~(sfix apat:de-purl:html yquy:de-purl:html)
+    ?+    path  (on-poke:default mark vase)
     ::
     ::  Main page, so return rendered page
-    =;  out=(quip card _+.state)
-      [-.out this(+.state +.out)]
-    %.  [bowl !<(order:rudder vase) +.state]
-    %-  (steer:rudder _+.state appeal:beacon)
-    :^    pages
-        (point:rudder /[dap.bowl] & ~(key by pages))
-      (fours:rudder +.state)
-    |=  =appeal:beacon
-    ^-  $@  brief:rudder
-        [brief:rudder (list card) _+.state]
-    =^  caz  this
-      (on-poke %beacon-appeal !>(appeal))
-    ['Processed succesfully.' caz +.state]
+        [%beacon ~]
+      =;  out=(quip card _+.state)
+        [-.out this(+.state +.out)]
+      %.  [bowl !<(order:rudder vase) +.state]
+      %-  (steer:rudder _+.state appeal:beacon)
+      :^    pages
+          (point:rudder /[dap.bowl] & ~(key by pages))
+        (fours:rudder +.state)
+      |=  =appeal:beacon
+      ^-  $@  brief:rudder
+          [brief:rudder (list card) _+.state]
+      =^  caz  this
+        (on-poke %beacon-appeal !>(appeal))
+      ['Processed succesfully.' caz +.state]
     ::
     ::  Server URL request, so parse JSON to set URL
-    ?:  =(url.request.inbound-request '/beacon-set-url')
-    ?~  body.request.inbound-request
-      (bail id 'not-implemented')
-    =/  injs  `@t`+:(need body.request.inbound-request)
-    =/  url  `@t`(from-js-url (need (de-json:html injs)))
-    :_  this(auto url)
-    %+  give-simple-payload:app:server  id
-    %-  simple-payload:http
-    %-  json-response:gen:server
-    %+  frond:enjs:format  %status  b+%.y
+        [%beacon %set-url ~]
+      ?~  body.request.inbound-request
+        (bail id 'not-implemented')
+      =/  url
+        %-  (ot url+so ~):dejs:format
+        (need (de-json:html q:(need body.request.inbound-request)))
+      :_  this(auto url)
+      %+  give-simple-payload:app:server  id
+      %-  simple-payload:http
+      %-  json-response:gen:server
+      %+  frond:enjs:format  %status  b+%.y
     ::
     ::  Server URL request, so parse JSON to send request
-    ?:  =(url.request.inbound-request '/beacon-send')
-    ?~  body.request.inbound-request
-      (bail id 'not-implemented')
-    =/  injs  `@t`+:(need body.request.inbound-request)
-    =/  target  `@p`(need (slaw %p (crip (weld "~" (trip (from-js (need (de-json:html injs))))))))
-    ::(on-poke %beacon-appeal !>(`appeal:beacon`[%auth target]))
-    :_  this(bids (~(put by bids) target %clotho))
-    ^-  (list card)
-    ;:  weld
-    ^-  (list card)
-    :~  :*  %pass
-            /beacon/(scot %t auto)
-            %agent  [target %sentinel]  %watch
-            /status/(scot %t auto)
-    ==  ==
-    ^-  (list card)
-    %+  give-simple-payload:app:server  id
-    %-  simple-payload:http
-    %-  json-response:gen:server
-    %+  frond:enjs:format  %status  b+%.y
-    ==
+        [%beacon %send ~]
+      ?~  body.request.inbound-request
+        (bail id 'not-implemented')
+      =/  target=@p
+        %-  (ot ship+(se %p) ~):dejs:format
+        (need (de-json:html q:(need body.request.inbound-request)))
+      ::(on-poke %beacon-appeal !>(`appeal:beacon`[%auth target]))
+      :_  this(bids (~(put by bids) target %clotho))
+      ^-  (list card)
+      :-  :*  %pass
+                /beacon/(scot %t auto)
+                %agent  [target %sentinel]  %watch
+                /status/(scot %t auto)
+          ==
+      %+  give-simple-payload:app:server  id
+      %-  simple-payload:http
+      %-  json-response:gen:server
+      %+  frond:enjs:format  %status  b+%.y
+      
     ::
     ::  Server URL request, so parse JSON to check status
-    ?>  =(url.request.inbound-request '/beacon-check')
-    ?~  body.request.inbound-request
-      (bail id 'not-implemented')
-    =/  injs  `@t`+:(need body.request.inbound-request)
-    =/  target  `@p`(need (slaw %p (crip (weld "~" (trip (from-js (need (de-json:html injs))))))))
-    =/  result  (~(gut by bids) target %clotho)
-    :_  this
-    %+  give-simple-payload:app:server  id
-    %-  simple-payload:http
-    %-  json-response:gen:server
-    (to-js target ?:(=(%lachesis result) %.y %.n))
+        [%beacon %check ~]
+      ?~  body.request.inbound-request
+        (bail id 'not-implemented')
+      =/  target=@p
+        %-  (ot ship+(se %p) ~):dejs:format
+        (need (de-json:html q:(need body.request.inbound-request)))
+      =/  result  (~(gut by bids) target %clotho)
+      :_  this
+      %+  give-simple-payload:app:server  id
+      %-  simple-payload:http
+      %-  json-response:gen:server
+      (to-js target ?:(=(%lachesis result) %.y %.n))
     ==
+  ==
   ++  error-response
     |=  error=@t
     ^-  simple-payload:http
@@ -192,18 +191,6 @@
     :_  this
     %+  give-simple-payload:app:server  id
     (error-response error)
-  ++  from-js
-    =,  dejs:format
-    %-  ot
-    :~
-      [%ship so]
-    ==
-  ++  from-js-url
-    =,  dejs:format
-    %-  ot
-    :~
-      [%url so]
-    ==
   ++  to-js
     |=  [=ship:beacon status=?(%.y %.n)]
     |^  ^-  json
