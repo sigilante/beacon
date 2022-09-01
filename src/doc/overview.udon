@@ -13,4 +13,3 @@ on an Urbit ship (likely a dedicated moon).  The website is responsible to
 maintain the session, time it out, and so forth (as usual).
 
 There is a web interface available for direct management at `/beacon`.
-

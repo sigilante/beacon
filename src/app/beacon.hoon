@@ -7,13 +7,13 @@
 ::
 ::    y  /                (set ship)
 ::
-::    x  /me              url:beacon
+::    x  /me              url
 ::    x  /notyet          (set ship)
 ::    x  /authed          (set ship)
 ::    x  /burned          (set ship)
 ::
 /-  beacon, sentinel
-/+  default-agent, dbug, verb, rudder
+/+  dbug, default-agent, rudder, server, verb
 /~  pages  (page:rudder [url:beacon ships:beacon] appeal:beacon)  /app/beacon
 |%
 +$  versioned-state
@@ -39,6 +39,8 @@
   ~&  >  "%beacon initialized successfully."
   :_  this
   :~  [%pass /eyre %arvo %e %connect [~ /'beacon'] %beacon]
+      [%pass /eyre %arvo %e %connect [~ /'beacon-send'] %beacon]
+      [%pass /eyre %arvo %e %connect [~ /'beacon-check'] %beacon]
   ==
 ::
 ++  on-save
@@ -56,11 +58,11 @@
 ++  on-poke
   |=  [=mark =vase]
   ^-  (quip card _this)
+  |^
   ?+    mark  (on-poke:default mark vase)
     ::
       %beacon-appeal
     =/  appeal  !<(appeal:beacon vase)
-  ~&  >>  "%beacon: {<appeal>}"
     ?-    -.appeal
       ::
       ::  Set the agent's authentication URL.
@@ -72,11 +74,6 @@
         %send
       ?>  =(our.bowl src.bowl)
       :_  this(bids (~(put by bids) ship.appeal %clotho))
-      ~&  >>>  :*  %pass
-              /beacon/(scot %t auto)
-              %agent  [ship.appeal %sentinel]  %watch
-              /status/(scot %t auto)
-      ==
       :~  :*  %pass
               /beacon/(scot %t auto)
               %agent  [ship.appeal %sentinel]  %watch
@@ -94,6 +91,12 @@
   ::
     ::  %handle-http-request:  incoming from eyre
       %handle-http-request
+    =+  !<([id=@ta =inbound-request:eyre] vase)
+    ?:  ?|
+        =(url.request.inbound-request '/beacon')
+        =((crip (scag 13 (trip url.request.inbound-request))) '/beacon?rmsg=')
+        ==
+    ::  Main page, so return rendered page
     =;  out=(quip card _+.state)
       [-.out this(+.state +.out)]
     %.  [bowl !<(order:rudder vase) +.state]
@@ -107,12 +110,58 @@
     =^  caz  this
       (on-poke %beacon-appeal !>(appeal))
     ['Processed succesfully.' caz +.state]
-  ==
+    ::  Server URL request, so parse JSON
+    ?:  =(url.request.inbound-request '/beacon-send')
+    ?~  body.request.inbound-request
+      (bail id 'not-implemented')
+    =/  injs  `@t`+:(need body.request.inbound-request)
+    =/  target  `@p`(need (slaw %p (crip (weld "~" (trip (from-js (need (de-json:html injs))))))))
+    (on-poke %beacon-appeal !>(`appeal:beacon`[%auth target]))
+    ::  Server URL request, so parse JSON
+    ?>  =(url.request.inbound-request '/beacon-check')
+    ?~  body.request.inbound-request
+      (bail id 'not-implemented')
+    =/  injs  `@t`+:(need body.request.inbound-request)
+    =/  target  `@p`(need (slaw %p (crip (weld "~" (trip (from-js (need (de-json:html injs))))))))
+    =/  result  (~(gut by bids) target %atropos)
+    :_  this
+    %+  give-simple-payload:app:server  id
+    %-  simple-payload:http
+    %-  json-response:gen:server
+    (to-js target ?:(=(%lachesis result) %.y %.n))
+    ==
+  ++  error-response
+    |=  error=@t
+    ^-  simple-payload:http
+    =,  enjs:format
+    %-  json-response:gen:server
+    %+  frond  
+    %error  s+error
+  ++  bail
+    |=  [id=@ta error=@t]
+    ^-  (quip card _this)
+    :_  this
+    %+  give-simple-payload:app:server  id
+    (error-response error)
+  ++  from-js
+    =,  dejs:format
+    %-  ot
+    :~
+      [%ship so]
+    ==
+  ++  to-js
+    |=  [=ship:beacon status=?(%.y %.n)]
+    |^  ^-  json
+    %-  pairs:enjs:format
+    :~  :-  'ship'    s+(scot %p ship)
+        :-  'status'  b+status
+    ==
+    --
+  --
 ::
 ++  on-watch
   |=  =path
   ^-  (quip card _this)
-  ~&  >  "%beacon:  subscription from {<src.bowl>}."
   ?+  path  (on-watch:default path)
       [%http-response *]
     ?:  =(our src):bowl
@@ -170,10 +219,8 @@
   |=  [=wire =sign:agent:gall]
   ^-  (quip card _this)
   ::  handle wire returns from agents
-  ~&  >>>  "%beacon-agent:  {<wire>}"
   ?+    wire  (on-agent:default wire sign)
       [%beacon @ ~]
-    ~&  >>>  "%beacon-sign:  {<sign>}"
     ?+    -.sign  (on-agent:default wire sign)
         %watch-ack
       ?~  p.sign
@@ -185,13 +232,11 @@
       [%pass wire %agent [src.bowl %sentinel] %watch /status/[i.t.wire]]~
     ::
         %fact
-      ~&  >  "%beacon-cage:  {<cage.sign>}"
       ?+    p.cage.sign  (on-agent:default wire sign)
         :: It's a bit strange to unpack these because they return the
         :: action and the ship, which is the source already.  TODO clean up
           %beacon-appeal
         =/  action  !<(appeal:beacon q.cage.sign)
-        ~&  >>  "%beacon-appeal: {<action>} {<src.bowl>}"
         ?+    -.action  (on-agent:default wire sign)
             %auth
           `this(bids (~(put by bids) src.bowl %lachesis))
@@ -208,9 +253,9 @@
   ?.  ?=([%eyre %bound *] sign-arvo)
     (on-arvo:default [wire sign-arvo])
   ?:  accepted.sign-arvo
-    %-  (slog leaf+"/beacon bound successfully!" ~)
+    %-  (slog leaf+"%beacon:  endpoints bound successfully!" ~)
     `this
-  %-  (slog leaf+"Binding /beacon failed!" ~)
+  %-  (slog leaf+"%beacon:  binding endpoints failed!" ~)
   `this
 ++  on-fail   on-fail:default
 --
