@@ -193,9 +193,8 @@
 ++  on-arvo
 |=  [=wire =sign-arvo]
   ^-  (quip card _this)
-  ?.  ?=([%bind-beacon ~] wire)
+  ?.  ?=([%eyre %bound *] sign-arvo)
     (on-arvo:default [wire sign-arvo])
-  ?>  ?=([%eyre %bound *] sign-arvo)
   ?:  accepted.sign-arvo
     %-  (slog leaf+"/beacon bound successfully!" ~)
     `this

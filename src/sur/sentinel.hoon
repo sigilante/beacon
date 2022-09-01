@@ -11,11 +11,9 @@
 ::  %what   receive request to approve a URL
 ::  %okay   approve a URL (status to %.y)
 ::  %yeet   disapprove a URL (status to %.n)
-::  %sour   time out for a URL (status to %.n)
 +$  action
   $%  [%what =url]
       [%okay =url]
       [%yeet =url]
-      [%sour =url =@dr]
   ==
 --

@@ -196,7 +196,7 @@
               ;button(type "submit", class "bg-green text-white", name "what", value "auto"):"Set"
             ==
 
-            ;h3:"Ship bids"
+            ;h3:"Ship status"
 
             ;div(class "flex col")
               ;form(method "post", class "flex col")
@@ -244,6 +244,9 @@
       ;+  ?:  ?=(%lachesis fate)
             ;div
               ;+  (cut-with-shears ship)
+            ==
+            ;div
+               
             ==
       ::  Ship
       ;div(style "border: 1px solid #ccc; padding: 12px; border-radius: 6px", class "code"):"{(scow %p ship)}"
