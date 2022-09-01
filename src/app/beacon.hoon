@@ -5,12 +5,12 @@
 ::
 ::    Scry endpoints:
 ::
-::    y  /                (set ship:beacon)
+::    y  /                (set ship)
 ::
 ::    x  /me              url:beacon
-::    x  /notyet          (set ship:beacon)
-::    x  /authed          (set ship:beacon)
-::    x  /burned          (set ship:beacon)
+::    x  /notyet          (set ship)
+::    x  /authed          (set ship)
+::    x  /burned          (set ship)
 ::
 /-  beacon, sentinel
 /+  default-agent, dbug, verb, rudder
@@ -59,7 +59,7 @@
   ?+    mark  (on-poke:default mark vase)
     ::
       %beacon-appeal
-    =/  appeal  !<(?([%auto url:beacon] [%send ship:beacon] [%auth ship:beacon] [%burn ship:beacon]) vase)
+    =/  appeal  !<(?([%auto url:beacon] [%send ship] [%auth ship] [%burn ship]) vase)
   ~&  >>  "%beacon: {<appeal>}"
     ?-    -.appeal
       ::
@@ -71,25 +71,25 @@
       ::  Authentication for our URL has been requested.  (local only)
         %send
       ?>  =(our.bowl src.bowl)
-      :_  this(bids (~(put by bids) `ship:beacon`+.appeal %clotho))
+      :_  this(bids (~(put by bids) `ship`+.appeal %clotho))
       ~&  >>>  :*  %pass
               /beacon/(crip (scow %da now.bowl))
-              %agent  [`ship:beacon`+.appeal %sentinel]  %watch
+              %agent  [`ship`+.appeal %sentinel]  %watch
               /status/(scot %t auto)
       ==
       :~  :*  %pass
               /beacon/(crip (scow %da now.bowl))
-              %agent  [`ship:beacon`+.appeal %sentinel]  %watch
+              %agent  [`ship`+.appeal %sentinel]  %watch
               /status/(scot %t auto)
       ==  ==
       ::
       ::  A URL has been approved.
         %auth
-      `this(bids (~(put by bids) `ship:beacon`+.appeal %lachesis))
+      `this(bids (~(put by bids) `ship`+.appeal %lachesis))
       ::
       ::  A URL has been disapproved.
         %burn
-      `this(bids (~(put by bids) `ship:beacon`+.appeal %atropos))
+      `this(bids (~(put by bids) `ship`+.appeal %atropos))
     ==
   ::
     ::  %handle-http-request:  incoming from eyre
@@ -121,10 +121,10 @@
     ::
       [%status url:beacon]
     :_  this
-    =/  result  (~(gut by bids) `ship:beacon`+<:path '')
+    =/  result  (~(gut by bids) `ship`+<:path '')
     ?:  ?=(%lachesis result)
-      [%give %fact ~ %beacon-appeal !>(`appeal:beacon`[%auth `ship:beacon`+<:path])]~
-    [%give %fact ~ %beacon-appeal !>(`appeal:beacon`[%burn `ship:beacon`+<:path])]~
+      [%give %fact ~ %beacon-appeal !>(`appeal:beacon`[%auth `ship`+<:path])]~
+    [%give %fact ~ %beacon-appeal !>(`appeal:beacon`[%burn `ship`+<:path])]~
   ==
 ++  on-leave  on-leave:default
 ++  on-peek
@@ -137,24 +137,24 @@
         [%x %notyet ~]
           %-  alp
           %-  ~(rep by bids)
-          |=  [p=[a=ship:beacon b=fate:beacon] q=(set ship:beacon)]
+          |=  [p=[a=ship b=fate:beacon] q=(set ship)]
           ?:  ?=(%clotho b.p)  (~(put in q) a.p)  q
         [%x %authed ~]
           %-  alp
           %-  ~(rep by bids)
-          |=  [p=[a=ship:beacon b=fate:beacon] q=(set ship:beacon)]
+          |=  [p=[a=ship b=fate:beacon] q=(set ship)]
           ?:  ?=(%lachesis b.p)  (~(put in q) a.p)  q
         [%x %burned ~]
           %-  alp
           %-  ~(rep by bids)
-          |=  [p=[a=ship:beacon b=fate:beacon] q=(set ship:beacon)]
+          |=  [p=[a=ship b=fate:beacon] q=(set ship)]
           ?:  ?=(%atropos b.p)  (~(put in q) a.p)  q
-        [%x %ship ship:beacon ~]
+        [%x %ship ship ~]
           ``noun+!>((~(get by bids) (need (slaw %p +>-.path))))
       ==
   ::  scry results
   ++  arc  |=  l=(list url:beacon)  ``noun+!>(`arch`~^(malt (turn l (late ~))))
-  ++  alp  |=  s=(set ship:beacon)  ``noun+!>(s)
+  ++  alp  |=  s=(set ship)  ``noun+!>(s)
   ++  alf  |=  f=?           ``noun+!>(f)
   ++  ask  |=  u=(unit ?)  ?^(u (alf u.u) [~ ~])
   ::  data wrestling
