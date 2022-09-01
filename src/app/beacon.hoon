@@ -75,12 +75,12 @@
       ~&  >>>  :*  %pass
               /beacon/(crip (scow %da now.bowl))
               %agent  [`ship:beacon`+.appeal %sentinel]  %watch
-              /status/(scot %ud (jam auto))
+              /status/(scot %t auto)
       ==
       :~  :*  %pass
               /beacon/(crip (scow %da now.bowl))
               %agent  [`ship:beacon`+.appeal %sentinel]  %watch
-              /status/(scot %ud (jam auto))
+              /status/(scot %t auto)
       ==  ==
       ::
       ::  A URL has been approved.
