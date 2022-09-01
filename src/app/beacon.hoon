@@ -115,7 +115,9 @@
   ~&  >  "%beacon:  subscription from {<src.bowl>}."
   ?+  path  (on-watch:default path)
       [%http-response *]
-    `this
+    ?:  =(our src):bowl
+      `this
+    (on-watch:default path)
     ::
       [%status url:beacon]
     :_  this
