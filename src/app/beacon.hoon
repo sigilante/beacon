@@ -206,7 +206,7 @@
   ^-  (quip card _this)
   ?+  path  (on-watch:default path)
       [%http-response *]
-    ?:  =(our src):bowl
+    ?>  (team:title our.bowl src.bowl)
       `this
     (on-watch:default path)
     ::

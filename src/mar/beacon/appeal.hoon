@@ -7,6 +7,29 @@
 ++  grow
   |%
   ++  noun  appeal
+  ++  json
+    =,  enjs:format
+    |=  =appeal:beacon
+    ^-  ^json
+    ?+    -.appeal  !!
+        %auth
+      %-  pairs
+      :~  ['ship' s+(scot %p +.appeal)]
+          ['status' b+%.y]
+      ==
+    ::
+        %burn
+      %-  pairs
+      :~  ['ship' s+(scot %p +.appeal)]
+          ['status' b+%.n]
+      ==
+    ::
+        %send
+      %-  pairs
+      :~  ['ship' s+(scot %p +.appeal)]
+      ==
+    ==
   --
 ++  grad  %noun
 --
+
