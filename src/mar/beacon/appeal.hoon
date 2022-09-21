@@ -9,7 +9,6 @@
   ++  noun  appeal
   ++  json
     =,  enjs:format
-    |=  =appeal:beacon
     ^-  ^json
     ?+    -.appeal  !!
         %auth

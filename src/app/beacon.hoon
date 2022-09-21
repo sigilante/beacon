@@ -65,30 +65,16 @@
     ::
     ::  Set the agent's authentication URL.
         %auto
-      ?:  =(auto url.appeal)
-        `this
-      =/  ship-list=(list ship)  ~(tap in ~(key by bids))
-      =/  cards=(list card)
-        %+  turn  ship-list
-        |=  =ship
-        ^-  card
-        [%pass /beacon/(scot %t auto) %agent [ship %sentinel] %leave ~]
-      =.  cards
-        %+  weld  cards
-        %+  turn  ship-list
-        |=  =ship
-        ^-  card
-        =/  =wire  /beacon/(scot %t url.appeal)
-        =/  =path  /status/(scot %t url.appeal)
-        [%pass wire %agent [ship %sentinel] %watch path]
-      [cards this(auto url.appeal, bids (~(run by bids) |=(* %clotho)))]
+      =^  cards  state  (reset url.appeal)
+      [cards this]
     ::
     ::  Authentication for our URL has been requested.  (local only)
         %send
       ?:  (~(has by bids) ship.appeal)
         `this
       :_  this(bids (~(put by bids) ship.appeal %clotho))
-      :~  :*  %pass
+      :~  [%give %fact ~[/all] %beacon-update !>(pending+ship.appeal)]
+          :*  %pass
               /beacon/(scot %t auto)
               %agent  [ship.appeal %sentinel]  %watch
               /status/(scot %t auto)
@@ -96,11 +82,13 @@
     ::
     ::  A URL has been approved.
         %auth
-      `this(bids (~(put by bids) ship.appeal %lachesis))
+      :_  this(bids (~(put by bids) ship.appeal %lachesis))
+      [%give %fact ~[/all] %beacon-update !>(approve+ship.appeal)]~
     ::
     ::  A URL has been disapproved.
         %burn
-      `this(bids (~(put by bids) ship.appeal %atropos))
+      :_  this(bids (~(put by bids) ship.appeal %atropos))
+      [%give %fact ~[/all] %beacon-update !>(reject+ship.appeal)]~
     ==
   ::
   ::  %handle-http-request:  incoming from eyre
@@ -136,11 +124,13 @@
       =/  url
         %-  (ot url+so ~):dejs:format
         (need (de-json:html q:(need body.request.inbound-request)))
-      :_  this(auto url)
-      %+  give-simple-payload:app:server  id
-      %-  simple-payload:http
-      %-  json-response:gen:server
-      %+  frond:enjs:format  %status  b+%.y
+      =/  status-cards
+        %+  give-simple-payload:app:server  id
+        %-  simple-payload:http
+        %-  json-response:gen:server
+        %+  frond:enjs:format  %status  b+%.y
+      =^  cards  state  (reset url)
+      [(weld status-cards cards) this]
     ::
     ::  Server URL request, so parse JSON to send request
         [%beacon %send ~]
@@ -150,18 +140,20 @@
         %-  (ot ship+(se %p) ~):dejs:format
         (need (de-json:html q:(need body.request.inbound-request)))
       ::(on-poke %beacon-appeal !>(`appeal:beacon`[%auth target]))
+      =/  cards
+        %+  give-simple-payload:app:server  id
+        %-  simple-payload:http
+        %-  json-response:gen:server
+        %+  frond:enjs:format  %status  b+%.y
+      ?:  (~(has by bids) target)
+        [cards this]
       :_  this(bids (~(put by bids) target %clotho))
-      ^-  (list card)
-      :-  :*  %pass
-                /beacon/(scot %t auto)
-                %agent  [target %sentinel]  %watch
-                /status/(scot %t auto)
-          ==
-      %+  give-simple-payload:app:server  id
-      %-  simple-payload:http
-      %-  json-response:gen:server
-      %+  frond:enjs:format  %status  b+%.y
-      
+      :+  [%give %fact ~[/all] %beacon-update !>(pending+target)]
+        :*  %pass   /beacon/(scot %t auto)
+            %agent  [target %sentinel]
+            %watch  /status/(scot %t auto)
+        ==
+      cards
     ::
     ::  Server URL request, so parse JSON to check status
         [%beacon %check ~]
@@ -192,31 +184,57 @@
     %+  give-simple-payload:app:server  id
     (error-response error)
   ++  to-js
-    |=  [=ship:beacon status=?(%.y %.n)]
-    |^  ^-  json
+    |=  [=ship:beacon status=?]
+    ^-  json
     %-  pairs:enjs:format
     :~  :-  'ship'    s+(scot %p ship)
         :-  'status'  b+status
     ==
-    --
+  ++  reset
+    |=  =url:beacon
+    ^-  (quip card _state)
+    ?:  =(auto url)
+      `state
+    =/  ship-list=(list ship)  ~(tap in ~(key by bids))
+    =/  cards=(list card)
+      %+  turn  ship-list
+      |=  =ship
+      ^-  card
+      [%pass /beacon/(scot %t auto) %agent [ship %sentinel] %leave ~]
+    =.  cards
+      %+  weld  cards
+      %+  turn  ship-list
+      |=  =ship
+      ^-  card
+      =/  =wire  /beacon/(scot %t url)
+      =/  =path  /status/(scot %t url)
+      [%pass wire %agent [ship %sentinel] %watch path]
+    =.  cards
+      :_  cards
+      [%give %fact ~[/all] %beacon-update !>(url+url)]
+    [cards state(auto url, bids (~(run by bids) |=(* %clotho)))]
   --
 ::
 ++  on-watch
   |=  =path
   ^-  (quip card _this)
-  ?+  path  (on-watch:default path)
+  ?>  (team:title our.bowl src.bowl)
+  ?+    path  (on-watch:default path)
       [%http-response *]
-    ?>  (team:title our.bowl src.bowl)
-      `this
-    (on-watch:default path)
-    ::
+    `this
+  ::
+      [%all ~]
+    =/  =update:beacon  [%init auto bids]
+    :_  this
+    [%give %fact ~[/all] %beacon-update !>(update)]~
+  ::
       [%status @ ~]
     =/  =ship  (slav %p i.t.path)
     :_  this
-    =/  result  (~(gut by bids) ship '')
-    ?:  ?=(%lachesis result)
-      [%give %fact ~ %beacon-appeal !>(`appeal:beacon`[%auth ship])]~
-    [%give %fact ~ %beacon-appeal !>(`appeal:beacon`[%burn ship])]~
+    =/  =fate:beacon  (~(gut by bids) ship %clotho)
+    ?:  ?=(%lachesis fate)
+      [%give %fact ~ %beacon-appeal !>(auth+ship)]~
+    [%give %fact ~ %beacon-appeal !>(burn+ship)]~
   ==
 ++  on-leave  on-leave:default
 ++  on-peek
@@ -274,23 +292,26 @@
       [%pass wire %agent [src.bowl %sentinel] %watch /status/[i.t.wire]]~
     ::
         %fact
-      ?+    p.cage.sign  (on-agent:default wire sign)
+      ?+    p.cage.sign  `this
         :: It's a bit strange to unpack these because they return the
         :: action and the ship, which is the source already.  TODO clean up
           %beacon-appeal
         =/  action  !<(appeal:beacon q.cage.sign)
-        ?+    -.action  (on-agent:default wire sign)
+        ?+    -.action  `this
             %auth
-          `this(bids (~(put by bids) src.bowl %lachesis))
+          :_  this(bids (~(put by bids) src.bowl %lachesis))
+          [%give %fact ~[/all] %beacon-update !>(approve+src.bowl)]~
+        ::
             %burn
-          `this(bids (~(put by bids) src.bowl %atropos))
+          :_  this(bids (~(put by bids) src.bowl %atropos))
+          [%give %fact ~[/all] %beacon-update !>(reject+src.bowl)]~
         ==
       ==
     ==
   ==
 ::
 ++  on-arvo
-|=  [=wire =sign-arvo]
+  |=  [=wire =sign-arvo]
   ^-  (quip card _this)
   ?.  ?=([%eyre %bound *] sign-arvo)
     (on-arvo:default [wire sign-arvo])
