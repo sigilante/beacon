@@ -28,31 +28,42 @@ An Urbit ship maintains a standard interface for HTTP `POST` and `GET` requests,
 
 `%beacon` allows you to set the current website.  Since this is raw text, you should be consistent in how you type it:  e.g. `https://urbit.org/` and `https://urbit.org` will appear to be different websites.
 
+First get your cookie:
+
+```sh
+curl -i localhost:8080/~/login \
+     -X POST \
+     -d "password=lidlut-tabwed-pillex-ridrup"
+```
+
 To set the self-identifying URL, send a JSON message to the local `%beacon` ship at the endpoint `/beacon-set-url` with the contents of the target ship:  `{"url":"https://urbit.org"}`.  You should be consistent with this as it is only text (that is, trailing `/` will distinguish sites.)
 
 ```sh
 curl --header "Content-Type: application/json" \
+     --cookie "urbauth-~zod=0v7.n3fd5.vskf3.abi1u.e4j6i.8j4h1" \
      --request PUT \
      --data '{"url":"https://urbit.org"}' \
-     http://localhost:8080/beacon-set-url
+     http://localhost:8080/beacon/set-url
 ```
 
 To issue an authentication request, send a JSON message to the local `%beacon` ship at the endpoint `/beacon-send` with the contents of the target ship:  `{"ship":"~zod"}`.
 
 ```sh
 curl --header "Content-Type: application/json" \
+     --cookie "urbauth-~zod=0v7.n3fd5.vskf3.abi1u.e4j6i.8j4h1" \
      --request PUT \
      --data '{"ship":"~zod"}' \
-     http://localhost:8080/beacon-send
+     http://localhost:8080/beacon/send
 ```
 
 To check on the state of an authentication request, send a JSON message to the local `%beacon` ship at the endpoint `/beacon-check` with the contents of the target ship:  `{"ship":~"zod"}`.
 
 ```sh
 curl --header "Content-Type: application/json" \
+     --cookie "urbauth-~zod=0v7.n3fd5.vskf3.abi1u.e4j6i.8j4h1" \
      --request PUT \
      --data '{"ship":"~zod"}' \
-     http://localhost:8080/beacon-send
+     http://localhost:8080/beacon/check
 ```
 
 This will respond with a JSON of the format `{"ship":"~zod", "status": "true"}` (or `"false"`).
