@@ -1,7 +1,7 @@
 :~
   title+'Beacon'
   info+'Website authentication for the site administrator.  Quis custodiet ipsos custodes?'
-  color+0xd9.43ca
+  color+0xd9.4c3a
   version+[0 0 1]
   website+'https://urbit.org/'
   license+'MIT'
