@@ -18,4 +18,11 @@
       [%auth =ship]
       [%burn =ship]
   ==
++$  update
+  $%  [%url =url]
+      [%pending =ship]
+      [%approve =ship]
+      [%reject =ship]
+      [%init =url bids=ships]
+  ==
 --

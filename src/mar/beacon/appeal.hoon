@@ -3,13 +3,13 @@
 ++  grab
   |%
   ++  noun  appeal:beacon
+  ++  json  (of auto+so send+(se %p) ~):dejs:format
   --
 ++  grow
   |%
   ++  noun  appeal
   ++  json
     =,  enjs:format
-    |=  =appeal:beacon
     ^-  ^json
     ?+    -.appeal  !!
         %auth
