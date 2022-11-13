@@ -1,5 +1,7 @@
 #   Website Authentication using Urbit ID
 
+**This version is superseded by [`%beacon`](https://github.com/tinnus-napbus/beacon)/[`%sentinel`](https://github.com/tinnus-napbus/sentinel) at ~tinnus-napbus’ repos.**
+
 ##  Design Objective
 
 A website can authenticate a user's ownership of an active Urbit ship using a pair of agents:  one on the website's ship to request authentication, and one on the user's ship to confirm it.
