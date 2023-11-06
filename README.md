@@ -1,6 +1,8 @@
 #   Website Authentication using Urbit ID
 
-**This version is superseded by [`%beacon`](https://github.com/tinnus-napbus/beacon)/[`%sentinel`](https://github.com/tinnus-napbus/sentinel) at ~tinnus-napbus’ repos.**
+**`%beacon` and `%sentinel` are now completely replaced by the Urbit Authenticator tool.  They are left available for reference purposes but should not be used in production code anymore.**
+
+~~**This version is superseded by [`%beacon`](https://github.com/tinnus-napbus/beacon)/[`%sentinel`](https://github.com/tinnus-napbus/sentinel) at ~tinnus-napbus’ repos.**~~
 
 ##  Design Objective
 
